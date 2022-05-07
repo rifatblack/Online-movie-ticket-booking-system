@@ -1,0 +1,50 @@
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/home/root/BoxOffice
+ExecStart=/home/root/BoxOffice/myprojectenv/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          BoxOffice.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/home/root/BoxOffice
+ExecStart=/home/root/BoxOffice/myprojectenv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/run/gunicorn.sock BoxOffice.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+
+server {
+    listen 80;
+    server_name 164.90.199.85;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root /home/root/BoxOffice;
+    }
+    location /media/ {
+        root /home/root/BoxOffice;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/root/BoxOffice.sock;
+    }
+}

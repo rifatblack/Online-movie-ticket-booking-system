@@ -4,3 +4,9 @@ Pillow==9.1.0
 sqlparse==0.4.2
 tzdata==2022.1
 wrapt==1.11.2
+
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
